@@ -11,18 +11,18 @@
 </head>
 
 <body>
-    <div>
-        <h1 onclick="returnHome()">
-            Flixster
-        </h1>
-    </div>
+    
+
+        <button onclick="returnHome()" class="close-search-btn" id="close-search-btn">Clear</button>
+
     <form>
-        <input id="search" type="search" />
-        <button id='clicker'>Submit</button>
+        <input id="search" class="InputBox" type="search" placeholder="FLIXSTER"/>
+        <button id='clicker' class="SearchButton">Search</button>
     </form>
-                <button onclick="loadMore()">Load More</button>
-    <div id="movieDisplay">
-    </div>
+    <div class="NavBar"></div>
+    <div class="movies-grid" id="movies-grid"></div>
+    <button onclick="loadMore()" id="load-more-movies-btn" class="loadButton">Load More</button>
+
 </body>
 
 </html>

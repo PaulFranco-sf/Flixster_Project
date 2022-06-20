@@ -1,7 +1,6 @@
 let APIKEY = "676ff22685d8b88786e5e501105cb0b8";
-
 let movieForm = document.querySelector("form");
-let movieDisplayElement = document.getElementById("movieDisplay")
+let movieGridElement = document.getElementById("movies-grid")
 
 const generateError = (err) => {
     document.lastChild.innerHTML += `
@@ -19,7 +18,7 @@ let searchedMovie;
 let pageLoaded;
 let atNowPlaying;
 
-function init(count) {
+function init() {
 
     document.getElementById("clicker").addEventListener("click", async (ev) => {
     if (document.getElementById("search").value == ""){
@@ -29,18 +28,17 @@ function init(count) {
         pageNum = 1
         searchedMovie = document.getElementById("search").value;
         document.getElementById("search").value = ""
-
-        ev.preventDefault();
+ 
+       ev.preventDefault();
         let apiUrl = 'https://api.themoviedb.org/3/search/movie?api_key=' + APIKEY + '&query='+ searchedMovie + '&page=' + pageNum;
 
         try {
-            document.getElementById("movieDisplay").innerHTML = "";
+            document.getElementById("movies-grid").innerHTML = "";
             let response = await fetch(apiUrl);
             responseData = await response.json();
 
             if (Object.keys(responseData).length > 1){
                 for (const Index in responseData.results){
-
                     const movieData = {
                         Id: responseData.results[Index].id,
                         Title: responseData.results[Index].original_title,
@@ -64,7 +62,12 @@ function displayMovie(movieData, posterLink) {
     if (movieData.ImagePath == null){
         console.log("Image Not Found")
     }
-    document.getElementById("movieDisplay").innerHTML += `<div><p>${movieData.Title}</p> ${movieData.Rating} <img width=200px height=300px src=${posterLink + movieData.ImagePath}></div>`;
+    console.log(movieData, posterLink)
+    document.getElementById("movies-grid").innerHTML += `
+    <div class="movie-card">
+    <img src=${posterLink + movieData.ImagePath} class="movie-poster" width="250px" length="350px"><p class="movie-title"><b>${movieData.Title}</b></p><p class="movie-votes">⭐${movieData.Rating}</p>
+    </div>
+    `;
 }
 
 async function loadMore(){
@@ -129,9 +132,9 @@ async function loadCurrentMovies(){
     pageNum = 1
     let apiUrl = 'https://api.themoviedb.org/3/movie/now_playing?api_key=' + APIKEY + '&language=en-US&page=' + pageNum;
         try {
-            
             let response = await fetch(apiUrl);
             responseData = await response.json();
+
             if (Object.keys(responseData).length > 1){
                 for (const Index in responseData.results){
                     const movieData = {
@@ -140,7 +143,6 @@ async function loadCurrentMovies(){
                         Rating: responseData.results[Index].vote_average,
                         ImagePath: responseData.results[Index].poster_path,
                     }
-                    
                     displayMovie(movieData, posterLink);
                 }
                 
@@ -152,15 +154,14 @@ async function loadCurrentMovies(){
     atNowPlaying = true
 }
 
-if (movieDisplayElement == undefined){
+if (movieGridElement == undefined){
     loadCurrentMovies()
 }
 function returnHome(){
-    document.getElementById("movieDisplay").innerHTML = "";
+    document.getElementById("movies-grid").innerHTML = "";
     loadCurrentMovies();
 }
 
 
-//Variable and function names
 //Image is Null
 // Styling
