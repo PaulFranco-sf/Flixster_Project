@@ -49,6 +49,7 @@ function init() {
                 }
             }
             pageLoaded = true
+            atNowPlaying = false
         } catch (e) {
 
             generateError(document.getElementById("search").value);
@@ -58,11 +59,12 @@ function init() {
 
 }
 
-function displayMovie(movieData, posterLink) {
+function displayMovie(movieData, posterLink, apiUrl) {
     if (movieData.ImagePath == null){
         console.log("Image Not Found")
     }
-    console.log(movieData, posterLink)
+    console.log(apiUrl)
+   // console.log(movieData, posterLink)
     document.getElementById("movies-grid").innerHTML += `
     <div class="movie-card">
     <img src=${posterLink + movieData.ImagePath} class="movie-poster" width="250px" length="350px"><p class="movie-title"><b>${movieData.Title}</b></p><p class="movie-votes">⭐${movieData.Rating}</p>
@@ -71,7 +73,7 @@ function displayMovie(movieData, posterLink) {
 }
 
 async function loadMore(){
-
+    console.log("searching for" + searchedMovie)
     if (document.getElementById("search").value == "" && pageLoaded == false){
         alert("Enter a movie name before searching")
         return 0
@@ -92,14 +94,14 @@ async function loadMore(){
                         Rating: responseData.results[Index].vote_average,
                         ImagePath: responseData.results[Index].poster_path,
                     }
-                    displayMovie(movieData, posterLink);
+                    displayMovie(movieData, posterLink, apiUrl);
                 }
             }
 
         } catch (e) {
             generateError(document.getElementById("search").value);
         }
-
+        return 0
     }
 
     pageNum += 1
@@ -116,7 +118,7 @@ async function loadMore(){
                         Rating: responseData.results[Index].vote_average,
                         ImagePath: responseData.results[Index].poster_path,
                     }
-                    displayMovie(movieData, posterLink);
+                    displayMovie(movieData, posterLink, apiUrl);
                 }
             }
 
@@ -128,7 +130,7 @@ async function loadMore(){
 }
 
 async function loadCurrentMovies(){
-
+    console.log(searchedMovie)
     pageNum = 1
     let apiUrl = 'https://api.themoviedb.org/3/movie/now_playing?api_key=' + APIKEY + '&language=en-US&page=' + pageNum;
         try {
